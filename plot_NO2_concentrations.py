@@ -5,16 +5,17 @@ Created on Thu Apr 23 16:43:11 2020
 @author: rikis
 """
 
-
+from __future__ import unicode_literals
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 
 #Pot ser hauràs de treure l'estació de Vall Hebron d'aquesta llista si no hi han dades per les setmanes següents
 #Hauràs d'utilitzar el mateix format per nomenar les estacions en els arxius csv si vols que funcioni el codi
 ZBE_stations = ['Eixample', 'Gracia', 'Ciutadella', 'Poblenou', 'Sants', 'VallHebron', 'ObsFabra', 'PalauReial', 'Hospitalet', 'SantAdria']
-ZBE_titles = ['Barcelona (Eixample)', 'Barcelona (Gràcia - Sant Gervasi)', 'Barcelona (Ciutadella)', 'Barcelona (Poblenou)', 'Barcelona (Sants)', "Barcelona (Vall d'Hebron)", 'Barcelona (Observatori Fabra)', 'Barcelona (Palau Reial)', "l'Hospitalet de Llobregat", 'Sant Adrià de Besòs']
+ZBE_titles = ['Barcelona (Eixample)', 'Barcelona (Gràcia - Sant Gervasi)', 'Barcelona (Ciutadella)', 'Barcelona (Poblenou)', 'Barcelona (Sants)', 'Barcelona (Observatori Fabra)', 'Barcelona (Palau Reial)', "l'Hospitalet de Llobregat", 'Sant Adrià de Besòs']
 
 noZBE_stations = ['PratJardins', 'PratSagnier', 'Viladecans', 'SantCugat', 'SantaColoma', 'Badalona', 'Gava', 'Montcada', 'Barbera', 'SantAndreu', 'Palleja']
 noZBE_titles = ['el Prat de Llobregat (Jardins de la Pau)', 'el Prat de Llobregat (CEM Sagnier)', 'Viladecans', 'Sant Cugat del Vallès', 'Santa Coloma de Gramenet', 'Badalona', 'Gavà', 'Montcada i Reixac', 'Barberà del Vallès', 'Sant Andreu de la Barca', 'Pallejà']
@@ -22,18 +23,29 @@ noZBE_titles = ['el Prat de Llobregat (Jardins de la Pau)', 'el Prat de Llobrega
 stations = ZBE_stations + noZBE_stations
 stations_titles = ZBE_titles + noZBE_titles
 
-     
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+if not os.path.exists(dir_path + '/Plots_confinement'):
+    os.makedirs(dir_path + '/Plots_confinement')
+else:
+    pass
+
 def make_plot_with_errorbars(station,fig_name):
+
+    os.chdir(dir_path + '/Dades_XVPCA')
+
     #Aquí poses una altra línia de data6 = pd.read_csv(*) on * és la direcció del arxiu csv per l'estació station
-    data1 = pd.read_csv('./Dades_XVPCA/Dades_XVPCA_'+station+'_NO2_2020-03-16.csv')
-    data2 = pd.read_csv('./Dades_XVPCA/Dades_XVPCA_'+station+'_NO2_2020-03-23.csv')
-    data3 = pd.read_csv('./Dades_XVPCA/Dades_XVPCA_'+station+'_NO2_2020-03-30.csv')
-    data4 = pd.read_csv('./Dades_XVPCA/Dades_XVPCA_'+station+'_NO2_2020-04-06.csv')
-    data5 = pd.read_csv('./Dades_XVPCA/Dades_XVPCA_'+station+'_NO2_2020-04-13.csv')
+    data1 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2020-03-16.csv')
+    data2 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2020-03-23.csv')
+    data3 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2020-03-30.csv')
+    data4 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2020-04-06.csv')
+    data5 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2020-04-13.csv')
+    data6 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2020-04-20.csv')
+    data7 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2020-04-27.csv')
     
     #Aquí has d'afegir una altra línia si s'inclou un altre mes que no sigui Març o Abril
-    last_year_month3 = pd.read_csv('./Dades_XVPCA/Dades_XVPCA_'+station+'_NO2_2019-Marc.csv')
-    last_year_month4 = pd.read_csv('./Dades_XVPCA/Dades_XVPCA_'+station+'_NO2_2019-Abril.csv')
+    last_year_month3 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2019-Marc.csv')
+    last_year_month4 = pd.read_csv('Dades_XVPCA_'+station+'_NO2_2019-Abril.csv')
     
     #Aquí has d'afegir una altra línia per guardar les 24 mitjanes o medianes de la nova setmana
     mean1 = []
@@ -41,6 +53,8 @@ def make_plot_with_errorbars(station,fig_name):
     mean3 = []
     mean4 = []
     mean5 = []
+    mean6 = []
+    mean7 = []
     
     #Aquí has d'afegir una altra línia per les mitjanes del nou mes si cal
     last_year_mean3 = []
@@ -55,6 +69,8 @@ def make_plot_with_errorbars(station,fig_name):
     percentile3 = [[],[]]
     percentile4 = [[],[]]
     percentile5 = [[],[]]
+    percentile6 = [[],[]]
+    percentile7 = [[],[]]
 
     #Aquí hauràs d'afegir una altra línia si s'inclou un altre mes
     last_year_percentile3 = [[],[]]
@@ -82,6 +98,14 @@ def make_plot_with_errorbars(station,fig_name):
         percentile5[0].append(data5['H'+str(i).zfill(2)].quantile(q=per))
         percentile5[1].append(data5['H'+str(i).zfill(2)].quantile(q=1-per))
         
+        mean6.append(data6['H'+str(i).zfill(2)].median())
+        percentile6[0].append(data6['H'+str(i).zfill(2)].quantile(q=per))
+        percentile6[1].append(data6['H'+str(i).zfill(2)].quantile(q=1-per))
+        
+        mean7.append(data7['H'+str(i).zfill(2)].median())
+        percentile7[0].append(data7['H'+str(i).zfill(2)].quantile(q=per))
+        percentile7[1].append(data7['H'+str(i).zfill(2)].quantile(q=1-per))
+        
         
         #Aquí hauràs d'afegir 3 noves línies si hi han les dades d'un nou mes de l'any passat
         last_year_mean3.append(last_year_month3['H'+str(i).zfill(2)].median())
@@ -95,21 +119,23 @@ def make_plot_with_errorbars(station,fig_name):
         
 
     x = np.arange(1,25)
-    xticks = np.arange(0, 25, 4)
+    xticks = np.arange(0, 24, 4)
     plt.style.use('seaborn-white')
     
     #Aquí es defineixen el nombre de subplots en la imatge. Per afegir un nou hauràs de canviar de 5 a 6. Si vols incrementar el tamany
     #de la figura canvia el figsize
-    fig, ax = plt.subplots(1, 5, sharex='col', sharey='row', figsize=(12,6))
+    fig, ax = plt.subplots(1, 7, sharex='col', sharey='row', figsize=(20,6))
+  
     plt.subplots_adjust(wspace=0.05)
+    
     
     ax[0].set_ylabel('Concentració ($\mathrm{\mu g/m^3}$)', fontsize=15)
     ax[0].tick_params(axis='y', labelsize=14)
     
     #Per afegir el nou subplot hauràs d'afegir aquestes 10 línies i canviar el valor de ax[x]. També
     #has de canviar el de mean1, percentile1, i posar la sèrie que toqui per l'any passat. 
-    ax[0].plot(x, mean1, color='b') #aquesta línia genera el plot de la setmana de confinament
-    ax[0].plot(x, last_year_mean3, color='tab:orange') #aquesta genera el plot del mes de l'any anterior
+    ax[0].plot(x, mean1, color='b', label='2020') #aquesta línia genera el plot de la setmana de confinament
+    ax[0].plot(x, last_year_mean3, color='tab:orange', label='2019') #aquesta genera el plot del mes de l'any anterior
     ax[0].fill_between(x, percentile1[0], percentile1[1], facecolor='blue', alpha=0.2) #Aquest genera el sombrejat dels percentils de la setmana de confinament
     ax[0].fill_between(x, last_year_percentile3[0], last_year_percentile3[1], facecolors='tab:orange', alpha=0.2) #Aquest el sombrejat dels percentils del mes anterior
     ax[0].set_title( '16-20 Març 2020',  fontsize=13) #Aquí hauràs de canviar el títol per posar les dates de la setmana
@@ -119,8 +145,8 @@ def make_plot_with_errorbars(station,fig_name):
     ax[0].set_xticks(xticks)
     ax[0].tick_params(axis='x', labelsize=12)
     
-    ax[1].plot(x, mean2, color='b')
-    ax[1].plot(x, last_year_mean3, color='tab:orange')
+    ax[1].plot(x, mean2, color='b', label='2020')
+    ax[1].plot(x, last_year_mean3, color='tab:orange', label='2019')
     ax[1].fill_between(x, percentile2[0], percentile2[1], facecolor='blue', alpha=0.2)
     ax[1].fill_between(x, last_year_percentile3[0], last_year_percentile3[1], facecolors='tab:orange', alpha=0.2)
     ax[1].set_title('23-27 Març 2020', fontsize=13)
@@ -130,8 +156,8 @@ def make_plot_with_errorbars(station,fig_name):
     ax[1].set_xticks(xticks)
     ax[1].tick_params(axis='x', labelsize=12)
     
-    ax[2].plot(x, mean3, color='b')
-    ax[2].plot(x, last_year_mean3, color='tab:orange')
+    ax[2].plot(x, mean3, color='b', label='2020')
+    ax[2].plot(x, last_year_mean3, color='tab:orange', label='2019')
     ax[2].fill_between(x, percentile3[0], percentile3[1], facecolor='blue', alpha=0.2)
     ax[2].fill_between(x, last_year_percentile3[0], last_year_percentile3[1], facecolors='tab:orange', alpha=0.2)
     ax[2].set_title('30 Març-3 Abril 2020', fontsize=13)
@@ -141,8 +167,8 @@ def make_plot_with_errorbars(station,fig_name):
     ax[2].set_xticks(xticks)
     ax[2].tick_params(axis='x', labelsize=12)
     
-    ax[3].plot(x, mean4, color='b')
-    ax[3].plot(x, last_year_mean4, color='tab:orange')
+    ax[3].plot(x, mean4, color='b', label='2020')
+    ax[3].plot(x, last_year_mean4, color='tab:orange', label='2019')
     ax[3].fill_between(x, percentile4[0], percentile4[1], facecolor='blue', alpha=0.2)
     ax[3].fill_between(x, last_year_percentile4[0], last_year_percentile4[1], facecolors='tab:orange', alpha=0.2)
     ax[3].set_title('6-10 Abril 2020', fontsize=13)
@@ -152,8 +178,8 @@ def make_plot_with_errorbars(station,fig_name):
     ax[3].set_xticks(xticks)
     ax[3].tick_params(axis='x', labelsize=12)
 
-    ax[4].plot(x, mean5, color='b')
-    ax[4].plot(x, last_year_mean4, color='tab:orange')
+    ax[4].plot(x, mean5, color='b', label='2020')
+    ax[4].plot(x, last_year_mean4, color='tab:orange', label='2019')
     ax[4].fill_between(x, percentile5[0], percentile5[1], facecolor='blue', alpha=0.2)
     ax[4].fill_between(x, last_year_percentile4[0], last_year_percentile4[1], facecolors='tab:orange', alpha=0.2)
     ax[4].set_title('13-17 Abril 2020', fontsize=13)
@@ -163,11 +189,34 @@ def make_plot_with_errorbars(station,fig_name):
     ax[4].set_xticks(xticks)
     ax[4].tick_params(axis='x', labelsize=12)
     
+    ax[5].plot(x, mean6, color='b', label='2020')
+    ax[5].plot(x, last_year_mean4, color='tab:orange', label='2019')
+    ax[5].fill_between(x, percentile6[0], percentile6[1], facecolor='blue', alpha=0.2)
+    ax[5].fill_between(x, last_year_percentile4[0], last_year_percentile4[1], facecolors='tab:orange', alpha=0.2)
+    ax[5].set_title('20-24 Abril 2020', fontsize=13)
+    ax[5].grid(axis='y', which='major')
+    ax[5].hlines(40, -1, 25, colors='r')
+    ax[5].set_xlim(0,25)
+    ax[5].set_xticks(xticks)
+    ax[5].tick_params(axis='x', labelsize=12)
+    
+    ax[6].plot(x, mean7, color='b', label='2020')
+    ax[6].plot(x, last_year_mean4, color='tab:orange', label='2019')
+    ax[6].fill_between(x, percentile7[0], percentile7[1], facecolor='blue', alpha=0.2)
+    ax[6].fill_between(x, last_year_percentile4[0], last_year_percentile4[1], facecolors='tab:orange', alpha=0.2)
+    ax[6].set_title('27-30 Abril 2020', fontsize=13)
+    ax[6].grid(axis='y', which='major')
+    ax[6].hlines(40, -1, 25, colors='r')
+    ax[6].set_xlim(0,25)
+    ax[6].set_xticks(xticks)
+    ax[6].tick_params(axis='x', labelsize=12)
+    
     fig.suptitle('Concentració $\mathrm{NO_2}$ ' + fig_name, fontsize=17)
+    plt.show()
 
-    #plt.show()
     #Aquí posar la direcció de la carpeta on vols guardar els gràfics
-    plt.savefig('./Plots_confinement/'+station+'_NO2_90')
+    os.chdir(dir_path + '/Plots_confinement')
+    plt.savefig(station+'_NO2_90.png')
     plt.close()
     
 for i, station in enumerate(stations):
