@@ -14,8 +14,8 @@ import os
 
 #Pot ser hauràs de treure l'estació de Vall Hebron d'aquesta llista si no hi han dades per les setmanes següents
 #Hauràs d'utilitzar el mateix format per nomenar les estacions en els arxius csv si vols que funcioni el codi
-ZBE_stations = ['Eixample', 'Gracia', 'Ciutadella', 'Poblenou', 'Sants', 'VallHebron', 'ObsFabra', 'PalauReial', 'Hospitalet', 'SantAdria']
-ZBE_titles = ['Barcelona (Eixample)', 'Barcelona (Gràcia - Sant Gervasi)', 'Barcelona (Ciutadella)', 'Barcelona (Poblenou)', 'Barcelona (Sants)', 'Barcelona (Observatori Fabra)', 'Barcelona (Palau Reial)', "l'Hospitalet de Llobregat", 'Sant Adrià de Besòs']
+ZBE_stations = ['Eixample', 'Gracia', 'Ciutadella', 'Poblenou', 'Sants', 'ObsFabra', 'PalauReial', 'Hospitalet', 'SantAdria']
+ZBE_titles = ['Barcelona (Eixample)', 'Barcelona (Gràcia - Sant Gervasi)', 'Barcelona (Ciutadella)', 'Barcelona (Poblenou)', 'Barcelona (Sants)','Barcelona (Observatori Fabra)', 'Barcelona (Palau Reial)', "l'Hospitalet de Llobregat", 'Sant Adrià de Besòs']
 
 noZBE_stations = ['PratJardins', 'PratSagnier', 'Viladecans', 'SantCugat', 'SantaColoma', 'Badalona', 'Gava', 'Montcada', 'Barbera', 'SantAndreu', 'Palleja']
 noZBE_titles = ['el Prat de Llobregat (Jardins de la Pau)', 'el Prat de Llobregat (CEM Sagnier)', 'Viladecans', 'Sant Cugat del Vallès', 'Santa Coloma de Gramenet', 'Badalona', 'Gavà', 'Montcada i Reixac', 'Barberà del Vallès', 'Sant Andreu de la Barca', 'Pallejà']
@@ -129,6 +129,7 @@ def make_plot_with_errorbars(station,fig_name):
     plt.subplots_adjust(wspace=0.05)
     
     
+    
     ax[0].set_ylabel('Concentració ($\mathrm{\mu g/m^3}$)', fontsize=15)
     ax[0].tick_params(axis='y', labelsize=14)
     
@@ -211,9 +212,10 @@ def make_plot_with_errorbars(station,fig_name):
     ax[6].set_xticks(xticks)
     ax[6].tick_params(axis='x', labelsize=12)
     
+    ax[0].legend( loc = 'upper center', bbox_to_anchor = (0.79,1,0,0.01), bbox_transform = plt.gcf().transFigure, fontsize=12 )
     fig.suptitle('Concentració $\mathrm{NO_2}$ ' + fig_name, fontsize=17)
-    plt.show()
-
+    
+    #plt.show()
     #Aquí posar la direcció de la carpeta on vols guardar els gràfics
     os.chdir(dir_path + '/Plots_confinement')
     plt.savefig(station+'_NO2_90.png')
@@ -221,3 +223,4 @@ def make_plot_with_errorbars(station,fig_name):
     
 for i, station in enumerate(stations):
     make_plot_with_errorbars(station, stations_titles[i])
+
